@@ -1,38 +1,126 @@
-.App {
+
+
+body {
+  font-family: "Karla", sans-serif;
+  background: #F5F7FB; 
+  margin: 0; 
+  height: 100%; 
+  /* overflow: hidden; */
+  overflow: visible;
+
+}
+
+.background {
+  position: relative;
+}
+.blob0 {
+  position: fixed;
+  width: 297px;
+  height: 235px;
+  left: -100px;
+  top: 75%;
+  bottom:0%;
+}
+
+.blob1 {
+  position: fixed;
+  width: 297px;
+  height: 235px;
+  right: -100px;
+  top: -10%;
+  bottom:0%;
+  transform: rotate(-128.49deg);
+}
+
+.app-welcome-page {
+  background: #F5F7FB;
+  align-items: center;
   text-align: center;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.app-welcome-header{
+  font-family: 'Karla';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 31.25px;
+  line-height: 37px;
+  color: #293264;
+
+  margin-bottom: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.app-welcome-p{
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 19px;
+
+  color: #293264;
+}
+.app-start-button {
+  color: #F5F7FB; 
+  width: 193px;
+  height: 52px;
+  left: 179px;
+  top: 314px;
+
+  background: #4D5B9E;
+  border-radius: 15px;
+  
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
+.app-questions-container {
+  display: fixed;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+  padding: 100px;
+  margin-top: 10px;
+  max-height: fit-content;
+}
+.question {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  
+  padding:10px;
+  font-family: 'Karla';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 30px;
+
+
+  color: #293264;
+
 }
 
-.App-link {
-  color: #61dafb;
+.question-buttonsContainer {
+  display: grid;
+  /* grid-template: auto auto / repeat(4, 1fr); */
+  gap: 20px;
+  margin: 0;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.question-text {
+  
+}
+.question-button {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  line-height: 20px;
+  list-style-type: none;
+  padding: 3px;
+  opacity: 0.5;
+  border: 0.794239px solid #4D5B9E;
+  border-radius: 7.94239px;
+  cursor: pointer;
 }
