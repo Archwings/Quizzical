@@ -8,74 +8,81 @@ function App() {
   const [startScreen, setStartScreen] = React.useState(true);
 
   const [allQuestions, setAllQuestions] = React.useState([]);
+  
+  const[gameEnded, setGameEnded] = React.useState(false);
+  
+  const[correctCount, setCorrectCount] = React.useState(0);
 
-  const[questions, setQuestions] = React.useState(createQuestions());
-
-  function createQuestions() {
-    const questionsArray = allQuestions.map(question => {
-      //console.log(question)
-      //const container = {};
-      {
-      key:nanoid()
-      statement:decodeHTML(question.question)
-      ans:decodeHTML(question.correct_answer)
-      
-      options:createShuffledArray(question.correct_answer, question.incorrect_answers).map(incAns => ({
-        isSelected: false,
-        questionID: nanoid(),
-        text:decodeHTML(incAns)
-      }))}
-
-    })
-    return questionsArray;
-  }
-  console.log(questions);
 
   React.useEffect(() => {
-    fetch("https://opentdb.com/api.php?amount=5&category=31&type=multiple")
-      .then(res => res.json())
-      .then(data => setAllQuestions(data.results))
+    getAPIData()
   },[])
 
-  const questionsElement = questions.map(question => ( 
-    <Question
-      key={nanoid()}
-      statement={decodeHTML(question.question)}
-      ans={decodeHTML(question.correct_answer)}
-      
-      options={createShuffledArray(question.correct_answer, question.incorrect_answers).map(incAns => ({
-        isSelected: false,
-        questionID: nanoid(),
-        text:decodeHTML(incAns)
-      }))}
-      // options={question.incorrect_answers.map(option => decodeHTML(option)).map(option => ({
-      //   questionID: nanoid(),
-      //   text: decodeHTML(option)
-      // }))} 
+  function getAPIData() {
+    fetch("https://opentdb.com/api.php?amount=5&category=31&type=multiple")
+    .then(res => res.json())
+    .then(data => createQuestionData(data.results))
+  }
 
-      // options={createShuffledArray(question.correct_answer, question.incorrect_answers).map(option => ({
-      //   questionID: nanoid(),
-      //   text: decodeHTML(option)
-      // }))}
-      onClick={()=> onClickHandler(question)}
+  function createQuestionData(data) {
+    setAllQuestions(data.map(question => {
+      return {
+        key:nanoid(),
+        id:nanoid(),
+        statement:decodeHTML(question.question),
+        ans:decodeHTML(question.correct_answer),
+        options:createShuffledArray(question.correct_answer, question.incorrect_answers).map(option => ({
+          isSelected: false,
+          optionID: nanoid(),
+          text: decodeHTML(option)
+        }))
+      }
+    }))
+  }
+
+
+  const questionsElement = allQuestions.map(question => ( 
+    <Question
+      key={question.key}
+      id = {question.id}
+      statement={decodeHTML(question.statement)}
+      ans={decodeHTML(question.ans)}
+      options={question.options}
+      onClick={onClickHandler}
+      gameEnded={gameEnded}
     />
   ))
-  //console.log(allQuestions[0].incorrect_answers[0])
-
-  function onClickHandler(question) {
-    // setAllQuestions(prevQuestions => prevQuestions.map(prevQuestion => {
-    //   prevQuestion.key === question.key && prevQuestion.options.map(option => {
-    //       console.log(option)
-    //   })
-    // }
-    // ))
-    console.log(question)
 
 
-    // setAllQuestions(prevQuestions => prevQuestions.map(question => ({
-    //   ...question,
-    //   buttonKeys:{}
-    // }))) 
+  function onClickHandler(buttonID, questionID) {
+    setAllQuestions(prevQuestions => prevQuestions.map(question => {
+      if (question.id === questionID) {
+        const changedQuestion = findButton(question, buttonID)
+        return {
+          ...question,
+          options: changedQuestion
+        }
+      } else { 
+        return {
+          ...question
+        }
+      }
+    }))
+  }
+  function findButton(question , id) {
+    return question.options.map(option => {
+      if (option.optionID === id) {
+        return {
+          ...option,
+          isSelected:true
+          } 
+      } else {
+        return {
+          ...option,
+          isSelected:false
+        }
+      }
+    })
   }
 
   function decodeHTML(html) {
@@ -95,9 +102,32 @@ function App() {
       array[i] = array[j];
       array[j] = temp;
     }
-    console.log(array.length)
     return array;
   }
+  
+  function checkAnswers() {
+    setGameEnded(prevState => !prevState);
+    if (!gameEnded) {
+      for (let i = 0 ; i < allQuestions.length; i++) {
+        let selectedAns =""
+        const options = allQuestions[i].options
+        for (let j = 0; j < options.length; j++) {
+          if (options[j].isSelected) {
+            selectedAns = options[j].text
+          }
+        }
+        if (allQuestions[i].ans === selectedAns) {
+          
+          setCorrectCount(prevCount => prevCount+1)
+        } 
+      }
+    } else {
+      setCorrectCount(0)
+      getAPIData();
+    }
+  }
+
+  
 
   return (
     <div className="App">
@@ -105,6 +135,12 @@ function App() {
       {!startScreen &&
       <div className='app-questions-container'>
         {questionsElement}
+        <div>
+          {gameEnded &&
+            <h1 className='correct-count'>{`You got ${correctCount}/5 Correct!`}</h1>
+          }
+          <button className='submit-button' onClick={checkAnswers}>{gameEnded ? "Play Again" : "Check Answers"}</button>
+        </div>
       </div>}
 
       <div className='background'>
