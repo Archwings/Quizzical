@@ -8,6 +8,10 @@ In the project directory, you can run:
 
 ### `npm start`
 
+![Semantic description of image](/readme_images/Startgame.PNG "Home Screen")
+![Semantic description of image](/readme_images/Gameplay.PNG "Home Screen")
+![Semantic description of image](/readme_images/Endgame.PNG "Home Screen")
+
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
